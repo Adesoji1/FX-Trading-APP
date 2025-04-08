@@ -1,0 +1,124 @@
+version: "3.8"
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    hostname: rabbitmq
+    ports:
+      - "5672:5672"      
+      - "15672:15672"    
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_running"]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api-gateway:
+    build:
+      context: .
+      dockerfile: ./apps/api-gateway/Dockerfile
+    container_name: api-gateway
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: npm run start api-gateway
+    env_file: .env
+    environment:
+     
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
+      API_GATEWAY_PORT: ${API_GATEWAY_PORT}
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+
+  auth-service:
+    build:
+      context: .
+      dockerfile: ./apps/auth-service/Dockerfile
+    container_name: auth-service
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: npm run start auth-service
+    env_file: .env
+    environment:
+    
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
+      AUTH_DB_HOST: ${AUTH_DB_HOST}
+      AUTH_DB_PORT: ${AUTH_DB_PORT}
+      AUTH_DB_DATABASE: ${AUTH_DB_DATABASE}
+      AUTH_DB_USERNAME: ${AUTH_DB_USERNAME}
+      AUTH_DB_PASSWORD: ${AUTH_DB_PASSWORD}
+      MAIL_SERVER: ${MAIL_SERVER}
+      MAIL_PORT: ${MAIL_PORT}
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
+      DEBUG: "amqp*"
+    restart: unless-stopped
+
+  wallet-service:
+    build:
+      context: .
+      dockerfile: ./apps/wallet-service/Dockerfile
+    container_name: wallet-service
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: npm run start wallet-service
+    env_file: .env
+    environment:
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
+      WALLET_DB_HOST: ${WALLET_DB_HOST}
+      WALLET_DB_PORT: ${WALLET_DB_PORT}
+      WALLET_DB_DATABASE: ${WALLET_DB_DATABASE}
+      WALLET_DB_USERNAME: ${WALLET_DB_USERNAME}
+      WALLET_DB_PASSWORD: ${WALLET_DB_PASSWORD}
+    restart: unless-stopped
+
+  fx-service:
+    build:
+      context: .
+      dockerfile: ./apps/fx-service/Dockerfile
+    container_name: fx-service
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: npm run start fx-service
+    env_file: .env
+    environment:
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
+      FX_DB_HOST: ${FX_DB_HOST}
+      FX_DB_PORT: ${FX_DB_PORT}
+      FX_DB_DATABASE: ${FX_DB_DATABASE}
+      FX_DB_USERNAME: ${FX_DB_USERNAME}
+      FX_DB_PASSWORD: ${FX_DB_PASSWORD}
+      FX_API_KEY: ${FX_API_KEY}
+    restart: unless-stopped
+
+volumes:
+  rabbitmq-data:
+  redis-data:

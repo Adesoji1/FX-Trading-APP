@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wallet-service
+  namespace: fx-trading
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wallet-service
+  template:
+    metadata:
+      labels:
+        app: wallet-service
+    spec:
+      containers:
+        - name: wallet-service
+          image: adesojialu/wallet-service
+          ports:
+            - containerPort: 3002
+          envFrom:
+            - secretRef:
+                name: fx-trading-secret
+          resources:
+            requests:
+              cpu: "100m"        
+              memory: "128Mi"    
+            limits:
+              cpu: "250m"        
+              memory: "256Mi"    

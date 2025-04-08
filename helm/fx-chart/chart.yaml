@@ -1,0 +1,14 @@
+apiVersion: v2
+name: fx-trading
+version: 0.1.0
+description: FX Trading App Helm Chart
+---
+replicaCount: 2
+image:
+  repository: adesojialu/auth-service
+  tag: latest
+  pullPolicy: Always
+service:
+  type: ClusterIP
+  port: 3001
+resources: {}

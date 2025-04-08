@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-service
+  namespace: fx-trading
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth-service
+  template:
+    metadata:
+      labels:
+        app: auth-service
+    spec:
+      containers:
+        - name: auth-service
+          image: adesojialu/auth-service
+          ports:
+            - containerPort: 3001
+          envFrom:
+            - secretRef:
+                name: fx-trading-secrets
+          resources:
+            requests:
+              cpu: "100m"        
+              memory: "128Mi"    
+            limits:
+              cpu: "250m"        
+              memory: "256Mi"    

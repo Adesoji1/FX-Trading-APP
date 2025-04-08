@@ -1,0 +1,21 @@
+apiGateway:
+  image: adesojialu/api-gateway
+  port: 3000
+
+authService:
+  image: adesojialu/auth-service
+  port: 3001
+
+walletService:
+  image: adesojialu/wallet-service
+  port: 3002
+
+fxService:
+  image: adesojialu/fx-service
+  port: 3003
+
+redis:
+  image: redis:latest
+
+rabbitmq:
+  image: rabbitmq:3-management
