@@ -200,7 +200,7 @@ REDIS_HOST=redis
 REDIS_PORT=6379
 ```
 
-> ⚠️ Replace the values with your actual credentials or Supabase/PostgreSQL config.
+> Replace the values with your actual credentials or Supabase/PostgreSQL config.
 
 ---
 
@@ -218,7 +218,7 @@ This will spin up:
 - `rabbitmq`
 - `redis`
 
-🖥️ The API Gateway will be available at: [http://localhost:3000](http://localhost:3000)
+ The API Gateway will be available at: [http://localhost:3000](http://localhost:3000)
 
 ---
 
@@ -270,7 +270,7 @@ To create a role (user) with the name `xxxxxxxxxxxxxxx` in your Supabase Postgre
 - **Use in Your Application:**  
   Once the role is created and privileges are granted, update your application’s environment variables (e.g., `AUTH_DB_USERNAME`, `WALLET_DB_USERNAME`, etc.) to match this new role if you plan to use it for database connections.
 
-By running the above commands in the Supabase SQL editor, you’ll create the role and grant it access to your desired database.
+So when you  run the above commands in the Supabase SQL editor, you’ll create the role and grant it access to your desired database.
 
 ---
 
@@ -278,15 +278,15 @@ By running the above commands in the Supabase SQL editor, you’ll create the ro
 
 
 
-### 📌 Assumptions
+### My  Assumptions
 
-#### 💱 FX Rates
+####  FX Rates
 - The app fetches **real-time FX rates** from [ExchangeRate-API](https://www.exchangerate-api.com/), using the `latest/:base` endpoint.
 - The rates are not cached yet. Every conversion/trade fetches the latest rate during the request.
 - If the rate API fails or the requested currency pair is missing, the operation returns a `400` error.
 - Rates are assumed to be **one-way** (e.g., `NGN → USD`). Reverse rates are calculated using new requests or by re-querying.
 
-#### 👛 Wallet Design
+####  Wallet Design
 - Each user has a single wallet that stores balances as a key-value pair:
   ```json
   { "NGN": 10000, "USD": 5.45, "EUR": 2.93 }
@@ -297,12 +297,12 @@ By running the above commands in the Supabase SQL editor, you’ll create the ro
 - Funds are only modified in atomic operations to prevent race conditions.
 - Transactions are recorded for every wallet action: `fund`, `convert`, `trade`.
 
-#### 🛂 User System
+####  User System
 - Only **verified users** are allowed to trade.
 - Users are registered with an email and password, and must verify with an OTP sent via email.
 - `userId` is used to identify and link wallet and transaction records — currently passed directly via API calls.
 
-#### 📤 Other Notes
+####  Other Notes
 - FX conversions use `amount * rate`, not `amount / rate`. (This assumes NGN → USD would return few USD for a large amount of NGN.)
 - No admin users or role-based access currently.
 - Rate decimals are not truncated — precision is preserved as returned by the API.
@@ -339,7 +339,7 @@ To view test coverage:
 npm run test:cov wallet-service
 ```
 
-### 🧪 Test File
+###  Test File
 
 Tests are located in:
 
@@ -384,7 +384,7 @@ kubectl apply -k k8s/base
 
 ---
 
-### 🔁 Event-Driven Autoscaling with KEDA
+###  Event-Driven Autoscaling with KEDA
 
 KEDA (Kubernetes Event-Driven Autoscaler) allows services to scale based on real-time activity:
 
@@ -407,7 +407,7 @@ This ensures optimal resource usage during both low and peak traffic periods.
 
 ---
 
-### 📦 Image Management via DockerHub
+### Image Management via DockerHub
 
 All microservices are built and pushed to DockerHub under:
 
@@ -419,7 +419,7 @@ This enables versioned and reproducible image deployments in all environments.
 
 ---
 
-### 🧪 CI/CD with Jenkins
+###  CI/CD with Jenkins
 
 We use a `Jenkinsfile` that automates:
 
@@ -432,7 +432,7 @@ This ensures every new commit can be safely and consistently deployed to product
 
 ---
 
-### 🔐 TLS & Secure Ingress with cert-manager
+### TLS & Secure Ingress with cert-manager
 
 We use **cert-manager** and Let's Encrypt to automatically provision TLS certificates for the website below as an example:
 
@@ -444,19 +444,19 @@ This ensures encrypted communication and secure API access.
 
 ---
 
-### 🔐 Secrets Management via Kubernetes
+### Secrets Management via Kubernetes
 
 Sensitive values like database credentials, SMTP passwords, and API keys are stored securely using Kubernetes `Secrets`. These are mounted into the appropriate services at runtime.
 
 ---
 
-### 📊 (Optional Enhancements)
+### (Optional Enhancements)
 
 For additional observability and long-term scalability:
 
-- 🔍we can use **Prometheus + Grafana** for monitoring metrics like CPU, memory, and response times
-- 💡 Enable **distributed tracing** (e.g., OpenTelemetry or Jaeger)
-- 📬 Set up Slack/Email alerts for auto-scaling events and errors
+-  we can use **Prometheus + Grafana** for monitoring metrics like CPU, memory, and response times
+-  Enable **distributed tracing** (e.g., OpenTelemetry or Jaeger)
+-  Set up Slack/Email alerts for auto-scaling events and errors
 
 ---
 
@@ -470,7 +470,7 @@ So this architecture is built with scalability, resilience, and maintainability 
 - Reduce cost by scaling down during low usage
 - Maintain fast deploy cycles and independent service updates
 
-> 💡 This infrastructure can be ported to any cloud environment (GKE, EKS, AKS, DigitalOcean, etc.) with minimal changes.
+> This infrastructure can be ported to any cloud environment (GKE, EKS, AKS, DigitalOcean, etc.) with minimal changes.
 
 ---
 
@@ -480,7 +480,7 @@ So this architecture is built with scalability, resilience, and maintainability 
 
 
 ### API Endpoint Testing Using Curl and Postman
-The successful implementation of these is found in the screenshots folder  or visit  http://localhost:3000/api/docs
+The successful implementation of these is found in the screenshots folder located at `apps/Screenshots` or visit  http://localhost:3000/api/docs
 
 
 Key API Endpoints
